@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MULLING — Financial Forensics Engine</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <!-- D3.js v7 -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+
+  <!-- ═══ HEADER ═══════════════════════════════════════════ -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">🔍</div>
+        <span class="logo-text">MULLING</span>
+        <span class="logo-tag">Forensics Engine</span>
+      </div>
+      <div class="header-status">
+        <span class="status-dot"></span>
+        <span>SYSTEM ONLINE</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ MAIN CONTENT ═════════════════════════════════════ -->
+  <main class="main">
+
+    <!-- ── UPLOAD SECTION ─────────────────────────────────── -->
+    <section class="upload-section">
+      <div class="upload-card" id="drop-zone">
+        <span class="upload-icon">📂</span>
+        <div class="upload-title">Drop transaction CSV here</div>
+        <div class="upload-subtitle">or click to browse — supports .csv files up to 50 MB</div>
+        <button class="upload-btn" id="upload-btn">
+          <span>⬆</span> Choose File
+        </button>
+        <div class="upload-meta">
+          Required columns: transaction_id · sender_id · receiver_id · amount · timestamp
+        </div>
+        <div class="file-info"></div>
+        <input type="file" id="file-input" accept=".csv" hidden>
+      </div>
+
+      <button class="upload-btn" id="analyze-btn" style="display:none; margin-top:1rem;">
+        ⚡ Analyze Transactions
+      </button>
+    </section>
+
+    <!-- ── RESULTS SECTION ────────────────────────────────── -->
+    <section class="results-section">
+
+      <!-- Stats -->
+      <div class="stats-strip">
+        <div class="stat-card cyan">
+          <div class="stat-label">Accounts Analyzed</div>
+          <div class="stat-value" id="stat-accounts">—</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Suspicious Flagged</div>
+          <div class="stat-value" id="stat-suspicious">—</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-label">Fraud Rings</div>
+          <div class="stat-value" id="stat-rings">—</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Processing Time</div>
+          <div class="stat-value" id="stat-time">—</div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions-bar">
+        <button class="action-btn primary" id="btn-download-json">
+          📥 Download JSON Report
+        </button>
+        <button class="action-btn secondary" id="btn-reset">
+          🔄 New Analysis
+        </button>
+      </div>
+
+      <!-- Graph Visualization -->
+      <div class="section-title"><span class="icon">🕸️</span> Transaction Network Graph</div>
+      <div class="graph-wrapper">
+        <div class="graph-toolbar">
+          <div class="graph-toolbar-left">
+            <button class="toolbar-btn" id="btn-zoom-in">➕ Zoom In</button>
+            <button class="toolbar-btn" id="btn-zoom-out">➖ Zoom Out</button>
+            <button class="toolbar-btn" id="btn-zoom-fit">🎯 Fit</button>
+          </div>
+          <div class="graph-toolbar-right">
+            <button class="toolbar-btn active" id="btn-toggle-rings">🔴 Ring Highlights</button>
+          </div>
+        </div>
+        <div id="graph-canvas"></div>
+        <div class="graph-legend">
+          <div class="legend-item"><div class="legend-dot normal"></div> Normal Account</div>
+          <div class="legend-item"><div class="legend-dot suspicious"></div> Suspicious Account</div>
+          <div class="legend-item"><div class="legend-dot ring"></div> Ring Member</div>
+        </div>
+      </div>
+
+      <!-- Fraud Ring Summary Table -->
+      <div class="section-title"><span class="icon">🛡️</span> Fraud Ring Summary</div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Ring ID</th>
+              <th>Pattern Type</th>
+              <th>Member Count</th>
+              <th>Risk Score</th>
+              <th>Member Account IDs</th>
+            </tr>
+          </thead>
+          <tbody id="ring-table-body">
+            <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Upload a CSV to start analysis</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ═══ TOOLTIP ══════════════════════════════════════════ -->
+  <div class="node-tooltip"></div>
+
+  <!-- ═══ LOADER ═══════════════════════════════════════════ -->
+  <div class="loader-overlay">
+    <div class="loader-ring"></div>
+    <div class="loader-text">Analyzing Graph…</div>
+    <div class="loader-subtext">Detecting cycles · smurfing · shell networks</div>
+  </div>
+
+  <!-- ═══ TOAST ════════════════════════════════════════════ -->
+  <div class="toast"></div>
+
+  <!-- ═══ JS ═══════════════════════════════════════════════ -->
+  <script src="/static/js/engine.js"></script>
+</body>
+</html>
+
