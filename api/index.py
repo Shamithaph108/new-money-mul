@@ -3,17 +3,23 @@ Vercel Python Handler for Flask Application
 """
 import sys
 
+# Initialize app at module level
+from app import app as flask_app
+
 def handler(request):
     """Vercel Python handler function"""
     try:
-        from app import app
+        # Simple test route
+        if request.path == "/" or request.path == "":
+            return (
+                b"Hello from Money Muling Detection App",
+                200,
+                {"Content-Type": "text/html"}
+            )
         
-        # Use Flask's test client to handle the request
-        with app.test_client() as client:
-            # Make the request to Flask
+        # For API routes, use Flask
+        with flask_app.test_client() as client:
             response = client.get(request.path)
-            
-            # Return the response in Vercel's expected format
             return (
                 response.data,
                 response.status_code,
